@@ -1,0 +1,60 @@
+package client
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/gopheramol/document-handler/configuration"
+	"github.com/gopheramol/document-handler/model"
+)
+
+type S3Client interface {
+	GeneratePresignedURL(ctx context.Context, req model.PreSignedURLRequest) (URL string, err error)
+}
+
+type s3Client struct {
+	config configuration.HandlerServiceConfig
+}
+
+func NewS3Client(
+	config configuration.HandlerServiceConfig,
+) S3Client {
+	return s3Client{config: config}
+}
+
+// GeneratePresignedURL generates a presigned URL for accessing an S3 object.
+func (client s3Client) GeneratePresignedURL(ctx context.Context, req model.PreSignedURLRequest) (URL string, err error) {
+
+	// Specify your AWS credentials. Never hardcode them in a production environment.
+	creds := credentials.NewStaticCredentials(client.config.AccessKey, client.config.SecretKey, "")
+
+	// Specify the AWS region where your bucket is located.
+	cfg := aws.NewConfig().WithRegion(client.config.AWSRegion).WithCredentials(creds)
+
+	// Create a new session using the above configuration.
+	sess := session.Must(session.NewSession(cfg))
+
+	// Create an S3 service client.
+	svc := s3.New(sess)
+
+	// Set the expiration duration for the presigned URL.
+	expirationDuration := client.config.Expiry
+	// Create the request for the presigned URL.
+	request, _ := svc.PutObjectRequest(&s3.PutObjectInput{
+		Bucket: aws.String(req.BucketName),
+		Key:    aws.String(req.File),
+	})
+
+	// Generate the presigned URL.
+	url, err := request.Presign(expirationDuration)
+	if err != nil {
+		fmt.Println("Error creating presigned URL:", err)
+		return
+	}
+	URL = url
+	return
+}

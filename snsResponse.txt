@@ -1,0 +1,9 @@
+Received SNS notification: 
+{Records:[{EventVersion:2.1 EventSource:aws:s3 AwsRegion:ap-south-1 EventTime:2024-05-25 17:23:54.429 +0000 UTC 
+EventName:ObjectCreated:Put UserIdentity:{PrincipalID:AWS:AIDATGOD5X7OYU4ECCO3L} 
+RequestParameters:{SourceIPAddress:103.163.188.69}
+ResponseElements:{XAmzRequestID:GM117MSATVJFM9R8 XAmzID2:VBFYsYXwUZHomvbpjuc6VIMD5tx1+XIW1WRjPUGugCsFfWJvpzH+zLR5gEQRtDIAkz5I12c/RiCtghfmtfruY2VGdL+2t01Zlibr5JEZi+Y=} 
+S3:{S3SchemaVersion:1.0 ConfigurationID:file-uploads 
+Bucket:{Name:internet-exposed-bucket 
+OwnerIdentity:{PrincipalID:A2HTEX5J2WXNXQ} Arn:arn:aws:s3:::internet-exposed-bucket} 
+Object:{Key:pan.jpg Size:187172 ETag:7126d9eaa9a838c7e22ddb6bee953264 Sequencer:0066521EAA5CD99F99}}}]}
